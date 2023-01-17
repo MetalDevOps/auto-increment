@@ -16,6 +16,10 @@ jobs:
   build-and-publish-images:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
       # Generate previous and next version from git tags
       - name: Install GitVersion
         uses: gittools/actions/gitversion/setup@v0.9.7
@@ -28,40 +32,40 @@ jobs:
         with:
           useConfigFile: false
 
-      # - name: Display GitVersion outputs
-      #   run: |
-      #     echo "Major: ${{ steps.gitversion.outputs.major }}"
-      #     echo "Minor: ${{ steps.gitversion.outputs.minor }}"
-      #     echo "Patch: ${{ steps.gitversion.outputs.patch }}"
-      #     echo "PreReleaseTag: ${{ steps.gitversion.outputs.preReleaseTag }}"
-      #     echo "PreReleaseTagWithDash: ${{ steps.gitversion.outputs.preReleaseTagWithDash }}"
-      #     echo "PreReleaseLabel: ${{ steps.gitversion.outputs.preReleaseLabel }}"
-      #     echo "PreReleaseNumber: ${{ steps.gitversion.outputs.preReleaseNumber }}"
-      #     echo "WeightedPreReleaseNumber: ${{ steps.gitversion.outputs.weightedPreReleaseNumber }}"
-      #     echo "BuildMetaData: ${{ steps.gitversion.outputs.buildMetaData }}"
-      #     echo "BuildMetaDataPadded: ${{ steps.gitversion.outputs.buildMetaDataPadded }}"
-      #     echo "FullBuildMetaData: ${{ steps.gitversion.outputs.fullBuildMetaData }}"
-      #     echo "MajorMinorPatch: ${{ steps.gitversion.outputs.majorMinorPatch }}"
-      #     echo "SemVer: ${{ steps.gitversion.outputs.semVer }}"
-      #     echo "LegacySemVer: ${{ steps.gitversion.outputs.legacySemVer }}"
-      #     echo "LegacySemVerPadded: ${{ steps.gitversion.outputs.legacySemVerPadded }}"
-      #     echo "AssemblySemVer: ${{ steps.gitversion.outputs.assemblySemVer }}"
-      #     echo "AssemblySemFileVer: ${{ steps.gitversion.outputs.assemblySemFileVer }}"
-      #     echo "FullSemVer: ${{ steps.gitversion.outputs.fullSemVer }}"
-      #     echo "InformationalVersion: ${{ steps.gitversion.outputs.informationalVersion }}"
-      #     echo "BranchName: ${{ steps.gitversion.outputs.branchName }}"
-      #     echo "EscapedBranchName: ${{ steps.gitversion.outputs.escapedBranchName }}"
-      #     echo "Sha: ${{ steps.gitversion.outputs.sha }}"
-      #     echo "ShortSha: ${{ steps.gitversion.outputs.shortSha }}"
-      #     echo "NuGetVersionV2: ${{ steps.gitversion.outputs.nuGetVersionV2 }}"
-      #     echo "NuGetVersion: ${{ steps.gitversion.outputs.nuGetVersion }}"
-      #     echo "NuGetPreReleaseTagV2: ${{ steps.gitversion.outputs.nuGetPreReleaseTagV2 }}"
-      #     echo "NuGetPreReleaseTag: ${{ steps.gitversion.outputs.nuGetPreReleaseTag }}"
-      #     echo "VersionSourceSha: ${{ steps.gitversion.outputs.versionSourceSha }}"
-      #     echo "CommitsSinceVersionSource: ${{ steps.gitversion.outputs.commitsSinceVersionSource }}"
-      #     echo "CommitsSinceVersionSourcePadded: ${{ steps.gitversion.outputs.commitsSinceVersionSourcePadded }}"
-      #     echo "UncommittedChanges: ${{ steps.gitversion.outputs.uncommittedChanges }}"
-      #     echo "CommitDate: ${{ steps.gitversion.outputs.commitDate }}"
+      - name: Display GitVersion outputs
+        run: |
+          echo "Major: ${{ steps.gitversion.outputs.major }}"
+          echo "Minor: ${{ steps.gitversion.outputs.minor }}"
+          echo "Patch: ${{ steps.gitversion.outputs.patch }}"
+          echo "PreReleaseTag: ${{ steps.gitversion.outputs.preReleaseTag }}"
+          echo "PreReleaseTagWithDash: ${{ steps.gitversion.outputs.preReleaseTagWithDash }}"
+          echo "PreReleaseLabel: ${{ steps.gitversion.outputs.preReleaseLabel }}"
+          echo "PreReleaseNumber: ${{ steps.gitversion.outputs.preReleaseNumber }}"
+          echo "WeightedPreReleaseNumber: ${{ steps.gitversion.outputs.weightedPreReleaseNumber }}"
+          echo "BuildMetaData: ${{ steps.gitversion.outputs.buildMetaData }}"
+          echo "BuildMetaDataPadded: ${{ steps.gitversion.outputs.buildMetaDataPadded }}"
+          echo "FullBuildMetaData: ${{ steps.gitversion.outputs.fullBuildMetaData }}"
+          echo "MajorMinorPatch: ${{ steps.gitversion.outputs.majorMinorPatch }}"
+          echo "SemVer: ${{ steps.gitversion.outputs.semVer }}"
+          echo "LegacySemVer: ${{ steps.gitversion.outputs.legacySemVer }}"
+          echo "LegacySemVerPadded: ${{ steps.gitversion.outputs.legacySemVerPadded }}"
+          echo "AssemblySemVer: ${{ steps.gitversion.outputs.assemblySemVer }}"
+          echo "AssemblySemFileVer: ${{ steps.gitversion.outputs.assemblySemFileVer }}"
+          echo "FullSemVer: ${{ steps.gitversion.outputs.fullSemVer }}"
+          echo "InformationalVersion: ${{ steps.gitversion.outputs.informationalVersion }}"
+          echo "BranchName: ${{ steps.gitversion.outputs.branchName }}"
+          echo "EscapedBranchName: ${{ steps.gitversion.outputs.escapedBranchName }}"
+          echo "Sha: ${{ steps.gitversion.outputs.sha }}"
+          echo "ShortSha: ${{ steps.gitversion.outputs.shortSha }}"
+          echo "NuGetVersionV2: ${{ steps.gitversion.outputs.nuGetVersionV2 }}"
+          echo "NuGetVersion: ${{ steps.gitversion.outputs.nuGetVersion }}"
+          echo "NuGetPreReleaseTagV2: ${{ steps.gitversion.outputs.nuGetPreReleaseTagV2 }}"
+          echo "NuGetPreReleaseTag: ${{ steps.gitversion.outputs.nuGetPreReleaseTag }}"
+          echo "VersionSourceSha: ${{ steps.gitversion.outputs.versionSourceSha }}"
+          echo "CommitsSinceVersionSource: ${{ steps.gitversion.outputs.commitsSinceVersionSource }}"
+          echo "CommitsSinceVersionSourcePadded: ${{ steps.gitversion.outputs.commitsSinceVersionSourcePadded }}"
+          echo "UncommittedChanges: ${{ steps.gitversion.outputs.uncommittedChanges }}"
+          echo "CommitDate: ${{ steps.gitversion.outputs.commitDate }}"
 
       - name: Changelog
         uses: Bullrich/generate-release-changelog@master
@@ -69,6 +73,12 @@ jobs:
         env:
           REPO: ${{ github.repository }}
         if: github.ref_name == 'master'
+
+      - name: Build changelog
+        id: changelog
+        uses: mikepenz/release-changelog-builder-action@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
 
       # - name: Create Release
       #   id: create_release
@@ -95,6 +105,7 @@ jobs:
 
             "A new version **${{ steps.gitversion.outputs.semVer }}** for the **ansible-infra-deprovisioning** application was generated automatically through the **test increment** workflow."
 
+            ${{ steps.changelog.outputs.changelog }}
             *<sub>All assets built successfully</sub>*
           draft: false
           prerelease: false
