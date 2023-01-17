@@ -91,13 +91,15 @@ jobs:
 
       - name: Publish Github Release
         uses: softprops/action-gh-release@v1
+        env:
+          GIT_VERSION_SEMVER: ${{ steps.gitversion.outputs.semVer }}
         with:
           tag_name: ${{ steps.gitversion.outputs.semVer }}
           name: ${{ steps.gitversion.outputs.semVer }}
           body: |
             ${{ steps.generate_changelog.outputs.changelog }}
 
-            "A new version **steps.gitversion.outputs.semVer** for the **ansible-infra-deprovisioning** application was generated automatically through the **test increment** workflow."
+            "A new version **${{ GIT_VERSION_SEMVER }}** for the **ansible-infra-deprovisioning** application was generated automatically through the **test increment** workflow."
 
             *<sub>All assets built successfully</sub>*
           draft: false
