@@ -14,10 +14,10 @@ jobs:
           fetch-depth: 0
           branches: master
 
-      - name: Use Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: "12.x"
+      # - name: Use Node.js
+      #   uses: actions/setup-node@v1
+      #   with:
+      #     node-version: "12.x"
 
       # Generate previous and next version from git tags
       - name: Install GitVersion
@@ -66,49 +66,49 @@ jobs:
           echo "UncommittedChanges: ${{ steps.gitversion.outputs.uncommittedChanges }}"
           echo "CommitDate: ${{ steps.gitversion.outputs.commitDate }}"
 
-      - name: Publish Github Release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: |
-            .
-          tag_name: ${{ steps.gitversion.outputs.semVer }}
-          name: ${{ steps.gitversion.outputs.semVer }}
-          body: |
-            Release ${{ steps.gitversion.outputs.semVer }}
-          draft: false
-          prerelease: false
-          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
-
-
-      # - name: Changelog
-      #   uses: Bullrich/generate-release-changelog@master
-      #   id: generate_changelog
-      #   env:
-      #     REPO: ${{ github.repository }}
-      #   if: github.ref_name == 'master'
-
-      # - name: Create Release
-      #   id: create_release
-      #   uses: actions/create-release@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Publish Github Release
+      #   uses: softprops/action-gh-release@v1
       #   with:
-      #     tag_name: v${{ steps.galaxy_version.outputs.version }}
-      #     release_name: v${{ steps.galaxy_version.outputs.version }}
+      #     files: |
+      #       .
+      #     tag_name: ${{ steps.gitversion.outputs.semVer }}
+      #     name: ${{ steps.gitversion.outputs.semVer }}
       #     body: |
-      #       ${{ steps.generate_changelog.outputs.changelog }}
+      #       Release ${{ steps.gitversion.outputs.semVer }}
       #     draft: false
       #     prerelease: false
-      #   if: github.ref_name == 'master'
+      #     token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
 
-      # - name: Upload Release Asset
-      #   id: upload_release_asset
-      #   uses: actions/upload-release-asset@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     asset_path: stone-transactional-${{ steps.galaxy_version.outputs.version }}.tar.gz
-      #     asset_name: ${{ env.ARTIFACT_NAME }}-v${{ steps.galaxy_version.outputs.version }}.tar.gz
-      #     asset_content_type: application/tar+gzip
-      #   if: github.ref_name == 'master'
+
+      - name: Changelog
+        uses: Bullrich/generate-release-changelog@master
+        id: generate_changelog
+        env:
+          REPO: ${{ github.repository }}
+        if: github.ref_name == 'master'
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.gitversion.outputs.semVer }}
+          release_name: v${{ steps.gitversion.outputs.semVer }}
+          body: |
+            ${{ steps.generate_changelog.outputs.changelog }}
+          draft: false
+          prerelease: false
+        if: github.ref_name == 'master'
+
+      - name: Upload Release Asset
+        id: upload_release_asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: stone-transactional-${{ steps.gitversion.outputs.semVer }}.tar.gz
+          asset_name: ${{ env.ARTIFACT_NAME }}-v${{ steps.gitversion.outputs.semVer }}.tar.gz
+          asset_content_type: application/tar+gzip
+        if: github.ref_name == 'master'
