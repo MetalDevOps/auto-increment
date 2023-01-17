@@ -70,7 +70,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            package.json
+            .
           tag_name: ${{ steps.gitversion.outputs.semVer }}
           name: ${{ steps.gitversion.outputs.semVer }}
           body: |
@@ -78,3 +78,37 @@ jobs:
           draft: false
           prerelease: false
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+
+
+      # - name: Changelog
+      #   uses: Bullrich/generate-release-changelog@master
+      #   id: generate_changelog
+      #   env:
+      #     REPO: ${{ github.repository }}
+      #   if: github.ref_name == 'master'
+
+      # - name: Create Release
+      #   id: create_release
+      #   uses: actions/create-release@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     tag_name: v${{ steps.galaxy_version.outputs.version }}
+      #     release_name: v${{ steps.galaxy_version.outputs.version }}
+      #     body: |
+      #       ${{ steps.generate_changelog.outputs.changelog }}
+      #     draft: false
+      #     prerelease: false
+      #   if: github.ref_name == 'master'
+
+      # - name: Upload Release Asset
+      #   id: upload_release_asset
+      #   uses: actions/upload-release-asset@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
+      #     asset_path: stone-transactional-${{ steps.galaxy_version.outputs.version }}.tar.gz
+      #     asset_name: ${{ env.ARTIFACT_NAME }}-v${{ steps.galaxy_version.outputs.version }}.tar.gz
+      #     asset_content_type: application/tar+gzip
+      #   if: github.ref_name == 'master'
