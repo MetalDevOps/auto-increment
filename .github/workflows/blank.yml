@@ -9,10 +9,8 @@ jobs:
   build-and-publish-images:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-          branches: master
+      - name: Checkout code
+        uses: actions/checkout@v2
 
       # - name: Use Node.js
       #   uses: actions/setup-node@v1
@@ -100,6 +98,8 @@ jobs:
           draft: false
           prerelease: false
         if: github.ref_name == 'master'
+        run: |
+          ls -lath
 
       - name: Upload Release Asset
         id: upload_release_asset
