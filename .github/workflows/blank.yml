@@ -119,11 +119,6 @@ on:
 jobs:
   build_and_release:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [3.9]
-    env:
-      ARTIFACT_NAME: stone-transactional-collection
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
