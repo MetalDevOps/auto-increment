@@ -4,31 +4,31 @@ on:
     branches:
       - master
 
-jobs:
+# jobs:
 
-  build-and-publish-images:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+#   build-and-publish-images:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v2
+#         with:
+#           fetch-depth: 0
 
-      # - name: Use Node.js
-      #   uses: actions/setup-node@v1
-      #   with:
-      #     node-version: "12.x"
+#       # - name: Use Node.js
+#       #   uses: actions/setup-node@v1
+#       #   with:
+#       #     node-version: "12.x"
 
-      # Generate previous and next version from git tags
-      - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v0.9.7
-        with:
-          versionSpec: '5.x'
+#       # Generate previous and next version from git tags
+#       - name: Install GitVersion
+#         uses: gittools/actions/gitversion/setup@v0.9.7
+#         with:
+#           versionSpec: '5.x'
 
-      - name: Determine Version
-        id: gitversion
-        uses: gittools/actions/gitversion/execute@v0.9.7
-        with:
-          useConfigFile: true
+#       - name: Determine Version
+#         id: gitversion
+#         uses: gittools/actions/gitversion/execute@v0.9.7
+#         with:
+#           useConfigFile: true
 
       # - name: Display GitVersion outputs
       #   run: |
@@ -79,6 +79,67 @@ jobs:
       #     token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
 
 
+      # - name: Changelog
+      #   uses: Bullrich/generate-release-changelog@master
+      #   id: generate_changelog
+      #   env:
+      #     REPO: ${{ github.repository }}
+      #   if: github.ref_name == 'master'
+
+      # - name: Create Release
+      #   id: create_release
+      #   uses: actions/create-release@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+      #   with:
+      #     tag_name: v${{ steps.gitversion.outputs.semVer }}
+      #     release_name: v${{ steps.gitversion.outputs.semVer }}
+      #     body: |
+      #       ${{ steps.generate_changelog.outputs.changelog }}
+      #     draft: false
+      #     prerelease: false
+      #   if: github.ref_name == 'master'
+
+      # - name: List files
+      #   run: ls -la
+
+      # - name: Upload Release Asset
+      #   id: upload_release_asset
+      #   uses: actions/upload-release-asset@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+      #   with:
+      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
+      #     asset_path: auto-increment-${{ steps.gitversion.outputs.semVer }}.tar.gz
+      #     asset_name: ${{ env.ARTIFACT_NAME }}-v${{ steps.gitversion.outputs.semVer }}.tar.gz
+      #     asset_content_type: application/tar+gzip
+      #   if: github.ref_name == 'master'
+
+
+jobs:
+  build_and_release:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.9]
+    env:
+      ARTIFACT_NAME: stone-transactional-collection
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Generate previous and next version from git tags
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0.9.7
+        with:
+          versionSpec: '5.x'
+
+      - name: Determine Version
+        id: gitversion
+        uses: gittools/actions/gitversion/execute@v0.9.7
+        with:
+          useConfigFile: false
+
       - name: Changelog
         uses: Bullrich/generate-release-changelog@master
         id: generate_changelog
@@ -92,25 +153,17 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
         with:
-          tag_name: v${{ steps.gitversion.outputs.semVer }}
-          release_name: v${{ steps.gitversion.outputs.semVer }}
+          tag_name: v${{ steps.galaxy_version.outputs.version }}
+          release_name: v${{ steps.galaxy_version.outputs.version }}
           body: |
             ${{ steps.generate_changelog.outputs.changelog }}
           draft: false
           prerelease: false
         if: github.ref_name == 'master'
 
-      - name: List files
-        run: ls -la
-
       - name: Upload Release Asset
         id: upload_release_asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: auto-increment-${{ steps.gitversion.outputs.semVer }}.tar.gz
-          asset_name: ${{ env.ARTIFACT_NAME }}-v${{ steps.gitversion.outputs.semVer }}.tar.gz
-          asset_content_type: application/tar+gzip
         if: github.ref_name == 'master'
