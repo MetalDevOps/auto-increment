@@ -65,3 +65,15 @@ jobs:
           echo "CommitsSinceVersionSourcePadded: ${{ steps.gitversion.outputs.commitsSinceVersionSourcePadded }}"
           echo "UncommittedChanges: ${{ steps.gitversion.outputs.uncommittedChanges }}"
           echo "CommitDate: ${{ steps.gitversion.outputs.commitDate }}"
+
+      - name: Publish Github Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            package.json
+          tag_name: ${{ steps.gitversion.outputs.semVer }}
+          name: ${{ steps.gitversion.outputs.semVer }}
+          body: |
+            Release ${{ steps.gitversion.outputs.semVer }}
+          draft: false
+          prerelease: false
