@@ -16,10 +16,6 @@ jobs:
   build-and-publish-images:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
       # Generate previous and next version from git tags
       - name: Install GitVersion
         uses: gittools/actions/gitversion/setup@v0.9.7
