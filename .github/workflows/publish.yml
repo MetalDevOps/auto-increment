@@ -1,14 +1,16 @@
 ---
-name: Publish Release
-
+name: Build and Release Collection
 on:
   pull_request:
     branches:
       - master
-
+    paths:
+      - GitVersion.yml
   push:
     branches:
       - master
+    paths:
+      - GitVersion.yml
 
 jobs:
   publish:
