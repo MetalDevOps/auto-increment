@@ -47,5 +47,5 @@ jobs:
             A new version **${{ steps.gitversion.outputs.MajorMinorPatch }}** for the **ansible-infra-deprovisioning** role was generated automatically through the **ansible-infra-deprovisioning** workflow.
           draft: false
           prerelease: false
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
         if : github.ref_name == 'master'
